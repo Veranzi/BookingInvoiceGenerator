@@ -183,6 +183,7 @@
     out('amountPaid', get('amountPaid').value, formatMoney, currency);
     out('balanceDue', get('balanceDue').value, formatMoney, currency);
     out('bankName', get('bankName').value);
+    out('bankCode', get('bankCode').value);
     out('branchName', get('branchName').value);
     out('branchCode', get('branchCode').value);
     out('accountName', get('accountName').value);
