@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Invoice Generator</title>
+  <link rel="icon" href="favicon2.jpeg" type="image/jpeg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Booking Invoice Generator</h1>
+  </header>
+
+  <main class="app-main">
+    <section class="form-section">
+      <h2 class="form-title">Quote details</h2>
+      <form id="invoice-form">
+        <div class="form-grid form-grid-2">
+          <div class="form-block">
+            <label>Your business name</label>
+            <input type="text" id="businessName" value="The Red Moon House" readonly>
+          </div>
+          <div class="form-block form-block-billto">
+            <label>Bill to (client name)</label>
+            <input type="text" id="guestName" placeholder="Client or Company Name">
+          </div>
+          <div class="form-block">
+            <label>Address (line 1)</label>
+            <input type="text" id="address" placeholder="123 Street, City">
+          </div>
+          <div class="form-block">
+            <label>Client address (line 1)</label>
+            <input type="text" id="guestAddress1" placeholder="Address">
+          </div>
+          <div class="form-block">
+            <label>Address (line 2)</label>
+            <input type="text" id="addressLine2" placeholder="State, ZIP, Country">
+          </div>
+          <div class="form-block">
+            <label>Client address (line 2)</label>
+            <input type="text" id="guestAddress2" placeholder="City, State, ZIP">
+          </div>
+          <div class="form-block">
+            <label>Phone / Email</label>
+            <input type="text" id="phoneEmail" placeholder="Phone · email@example.com">
+          </div>
+          <div class="form-block">
+            <label>Guest Phone / Email</label>
+            <input type="text" id="guestContact" placeholder="Phone or email">
+          </div>
+        </div>
+
+        <div class="form-row form-row-invoice">
+          <div class="form-block">
+            <label>Invoice / Quote number</label>
+            <input type="text" id="invoiceNumber" placeholder="e.g. INV-001">
+          </div>
+          <div class="form-block">
+            <label>Date</label>
+            <input type="date" id="invoiceDate">
+          </div>
+        </div>
+
+        <div class="form-block">
+          <label>Currency</label>
+          <select id="currency">
+            <option value="EUR">EUR (€)</option>
+            <option value="USD">USD ($)</option>
+            <option value="KES">KES (KSh)</option>
+          </select>
+        </div>
+
+        <div class="form-block line-items-block">
+          <label class="line-items-label">Line items</label>
+          <table class="form-line-items">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="line-items-tbody">
+              <tr class="line-item-row" data-row="1">
+                <td><input type="text" name="lineDetails" placeholder="Item or service"></td>
+                <td><input type="number" name="lineQty" min="0" step="1" value="1"></td>
+                <td><input type="number" name="lineRate" min="0" step="0.01" value="0"></td>
+                <td><input type="number" name="lineAmount" min="0" step="0.01" readonly value="0.00"></td>
+                <td><button type="button" class="btn-remove-line" title="Remove line" aria-label="Remove line">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" id="btn-add-line" class="btn-add-line">+ Add line item</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-block">
+            <label>Tax rate (%)</label>
+            <input type="number" id="taxRate" min="0" max="100" step="0.01" value="0">
+          </div>
+          <div class="form-block">
+            <label>Payment terms</label>
+            <input type="text" id="paymentTerms" placeholder="e.g. Net 30">
+          </div>
+        </div>
+
+        <div class="form-block">
+          <label>Notes / Terms</label>
+          <textarea id="notesTerms" rows="3" placeholder="Thank you for your business.">Thank you for your business.</textarea>
+        </div>
+
+        <div class="form-block reservation-block">
+          <label class="block-label">Reservation</label>
+          <div class="form-row form-row-compact">
+            <div class="form-block">
+              <label>Reservation number</label>
+              <input type="text" id="reservationNumber" placeholder="Reservation ID">
+            </div>
+            <div class="form-block">
+              <label>Check-in</label>
+              <input type="date" id="checkIn">
+            </div>
+            <div class="form-block">
+              <label>Check-out</label>
+              <input type="date" id="checkOut">
+            </div>
+            <div class="form-block">
+              <label>Nights</label>
+              <input type="number" id="nights" min="0" readonly placeholder="Auto">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-block amounts-block">
+          <label class="block-label">Summary</label>
+          <div class="amounts-grid">
+            <div class="form-block"><label>Subtotal</label><input type="number" id="subtotal" min="0" step="0.01" readonly placeholder="0.00"></div>
+            <div class="form-block"><label>Tax amount</label><input type="number" id="taxAmount" min="0" step="0.01" readonly placeholder="Auto"></div>
+            <div class="form-block"><label>Total amount</label><input type="number" id="totalAmount" min="0" step="0.01" readonly placeholder="Subtotal + Tax"></div>
+            <div class="form-block"><label>Amount paid</label><input type="number" id="amountPaid" min="0" step="0.01" placeholder="0.00"></div>
+            <div class="form-block"><label>Balance due</label><input type="number" id="balanceDue" min="0" step="0.01" readonly placeholder="Auto"></div>
+          </div>
+        </div>
+
+        <div class="form-block bank-block">
+          <label class="block-label">Bank payment details</label>
+          <div class="form-grid form-grid-2">
+            <div class="form-block"><label>Bank name</label><input type="text" id="bankName" placeholder="Bank name"></div>
+            <div class="form-block"><label>Branch name</label><input type="text" id="branchName" placeholder="Branch"></div>
+            <div class="form-block"><label>Branch code</label><input type="text" id="branchCode" placeholder="Branch code"></div>
+            <div class="form-block"><label>Account name</label><input type="text" id="accountName" placeholder="Account name"></div>
+            <div class="form-block"><label>Account number</label><input type="text" id="accountNumber" placeholder="Account number"></div>
+            <div class="form-block"><label>Swift Code / IBAN</label><input type="text" id="swiftIban" placeholder="SWIFT or IBAN"></div>
+          </div>
+          <div class="form-block">
+            <label>Payment method</label>
+            <select id="paymentMethod">
+              <option value="">Select...</option>
+              <option value="Cash">Cash</option>
+              <option value="M-Pesa">M-Pesa</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Card">Card</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="btn-preview">Preview Invoice</button>
+          <button type="button" id="btn-print">Print / Save as PDF</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="invoice-section" id="invoice-section" aria-hidden="true">
+      <div class="invoice-paper" id="invoice-paper">
+        <div class="invoice-body">
+          <header class="invoice-letterhead">
+            <img src="favicon2.jpeg" alt="The Red Moon House" id="invoice-logo-img" class="invoice-logo-img" />
+            <h1 class="invoice-title">INVOICE</h1>
+          </header>
+          <div class="invoice-top-two">
+            <div class="invoice-business">
+              <strong id="out-businessName">The Red Moon House</strong>
+              <span id="out-address" class="invoice-address-line"></span>
+              <span id="out-addressLine2" class="invoice-address-line"></span>
+              <span id="out-phoneEmail" class="invoice-address-line"></span>
+            </div>
+            <div class="invoice-guest">
+              <h3>Bill to</h3>
+              <strong id="out-guestName"></strong>
+              <span id="out-guestAddress1" class="invoice-address-line"></span>
+              <span id="out-guestAddress2" class="invoice-address-line"></span>
+              <span id="out-guestContact" class="invoice-address-line"></span>
+            </div>
+          </div>
+          <div class="invoice-meta">
+            <span>Invoice Number: <strong id="out-invoiceNumber">______________________</strong></span>
+            <span>Invoice Date: <strong id="out-invoiceDate">________________________</strong></span>
+          </div>
+          <div class="invoice-reservation">
+            <p>Reservation: <strong id="out-reservationNumber">_________________</strong> · Check-in: <strong id="out-checkIn">_______________________</strong> · Check-out: <strong id="out-checkOut">______________________</strong> · Nights: <strong id="out-nights">___________________</strong></p>
+          </div>
+          <div class="invoice-items">
+            <table class="invoice-items-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Qty</th>
+                  <th>Rate</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="invoice-items-tbody">
+                <!-- filled by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="invoice-amounts">
+            <p class="invoice-currency-note">All amounts in <strong id="out-currency">USD</strong></p>
+            <p>Subtotal: <strong id="out-subtotal">___________</strong></p>
+            <p>Tax: <strong id="out-taxAmount">___________</strong></p>
+            <p>Total Amount: <strong id="out-totalAmount">___________</strong></p>
+            <p>Amount Paid: <strong id="out-amountPaid">___________</strong></p>
+            <p>Balance Due: <strong id="out-balanceDue">___________</strong></p>
+          </div>
+          <div class="invoice-extra">
+            <p><strong>Payment terms:</strong> <span id="out-paymentTerms">—</span></p>
+            <p><strong>Notes / Terms:</strong> <span id="out-notesTerms">Thank you for your business.</span></p>
+          </div>
+          <div class="invoice-bank">
+            <h3>Bank Payment Details</h3>
+            <p>Bank Name: <strong id="out-bankName">___________________________</strong></p>
+            <p>Branch Name: <strong id="out-branchName">_________________________</strong></p>
+            <p>Branch Code: <strong id="out-branchCode">_________________________</strong></p>
+            <p>Account Name: <strong id="out-accountName">_______________________</strong></p>
+            <p>Account Number: <strong id="out-accountNumber">_____________________</strong></p>
+            <p>Swift Code / IBAN: <strong id="out-swiftIban">_________</strong></p>
+            <p>Payment Method: <strong id="out-paymentMethod">(Cash / M-Pesa / Bank Transfer / Card)</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
