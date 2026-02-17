@@ -62,7 +62,7 @@ body {
 
 @media (min-width: 900px) {
   .app-main {
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: minmax(320px, 460px) 1fr;
     align-items: start;
   }
 }
@@ -73,6 +73,8 @@ body {
   border-radius: var(--radius);
   padding: 1.5rem;
   box-shadow: var(--shadow);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .form-title {
@@ -95,6 +97,11 @@ form {
 
 .form-grid-2 {
   grid-template-columns: 1fr 1fr;
+  min-width: 0;
+}
+
+.form-grid-2 .form-block {
+  min-width: 0;
 }
 
 @media (max-width: 600px) {
@@ -128,6 +135,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;
 }
 
 .form-block label,
@@ -149,6 +157,8 @@ label {
 input,
 select,
 textarea {
+  width: 100%;
+  max-width: 100%;
   padding: 0.6rem 0.85rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -156,6 +166,7 @@ textarea {
   font-family: inherit;
   background: #f8f9fa;
   transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
 }
 
 textarea {
@@ -188,6 +199,7 @@ input[readonly] {
 
 .form-line-items {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 0.9375rem;
   margin-bottom: 0.5rem;
