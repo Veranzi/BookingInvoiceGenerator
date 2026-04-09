@@ -182,15 +182,97 @@
     out('totalAmount', get('totalAmount').value, formatMoney, currency);
     out('amountPaid', get('amountPaid').value, formatMoney, currency);
     out('balanceDue', get('balanceDue').value, formatMoney, currency);
-    out('bankName', get('bankName').value);
-    out('bankCode', get('bankCode').value);
-    out('branchName', get('branchName').value);
-    out('branchCode', get('branchCode').value);
-    out('accountName', get('accountName').value);
-    out('accountNumber', get('accountNumber').value);
-    out('swiftIban', get('swiftIban').value);
-    out('paymentMethod', get('paymentMethod').value);
+    // Payment method – show only the relevant block
+    const method = get('paymentMethod').value;
+    out('paymentMethod', method || '—');
+
+    var cashBlock = get('out-cash-block');
+    var mpesaBlock = get('out-mpesa-block');
+    var bankBlock = get('out-bank-block');
+    var cardBlock = get('out-card-block');
+    cashBlock.style.display = 'none';
+    mpesaBlock.style.display = 'none';
+    bankBlock.style.display = 'none';
+    cardBlock.style.display = 'none';
+
+    if (method === 'Cash') {
+      cashBlock.style.display = '';
+    } else if (method === 'M-Pesa') {
+      mpesaBlock.style.display = '';
+      out('mpesaName', get('mpesaName').value);
+      var mpesaType = get('mpesaType').value;
+      get('out-mpesa-phone-block').style.display = 'none';
+      get('out-mpesa-till-block').style.display = 'none';
+      get('out-mpesa-paybill-block').style.display = 'none';
+      if (mpesaType === 'Phone') {
+        get('out-mpesa-phone-block').style.display = '';
+        out('mpesaPhone', get('mpesaPhone').value);
+      } else if (mpesaType === 'Till') {
+        get('out-mpesa-till-block').style.display = '';
+        out('mpesaTill', get('mpesaTill').value);
+      } else if (mpesaType === 'Paybill') {
+        get('out-mpesa-paybill-block').style.display = '';
+        out('mpesaPaybill', get('mpesaPaybill').value);
+        out('mpesaAccountNo', get('mpesaAccountNo').value);
+      }
+    } else if (method === 'Bank Transfer') {
+      bankBlock.style.display = '';
+      out('bankName', get('bankName').value);
+      out('bankCode', get('bankCode').value);
+      out('branchName', get('branchName').value);
+      out('branchCode', get('branchCode').value);
+      out('accountName', get('accountName').value);
+      out('accountNumber', get('accountNumber').value);
+      out('swiftIban', get('swiftIban').value);
+    } else if (method === 'Card') {
+      cardBlock.style.display = '';
+      out('cardInstructions', get('cardInstructions').value);
+    }
   }
+
+  // Clear all inputs inside a container
+  function clearFields(container) {
+    container.querySelectorAll('input, select').forEach(function (el) {
+      if (el.tagName === 'SELECT') {
+        el.selectedIndex = 0;
+      } else {
+        el.value = '';
+      }
+    });
+  }
+
+  // Payment method field toggling — clear inactive sections
+  function togglePaymentFields() {
+    var method = get('paymentMethod').value;
+
+    if (method !== 'M-Pesa') clearFields(get('mpesa-fields'));
+    if (method !== 'Bank Transfer') clearFields(get('bank-fields'));
+    if (method !== 'Card') clearFields(get('card-fields'));
+
+    get('mpesa-fields').style.display = method === 'M-Pesa' ? '' : 'none';
+    get('bank-fields').style.display = method === 'Bank Transfer' ? '' : 'none';
+    get('card-fields').style.display = method === 'Card' ? '' : 'none';
+
+    // If leaving M-Pesa, also reset sub-type visibility
+    if (method !== 'M-Pesa') toggleMpesaType();
+  }
+
+  function toggleMpesaType() {
+    var mpesaType = get('mpesaType').value;
+
+    if (mpesaType !== 'Phone') clearFields(get('mpesa-phone-fields'));
+    if (mpesaType !== 'Till') clearFields(get('mpesa-till-fields'));
+    if (mpesaType !== 'Paybill') clearFields(get('mpesa-paybill-fields'));
+
+    get('mpesa-phone-fields').style.display = mpesaType === 'Phone' ? '' : 'none';
+    get('mpesa-till-fields').style.display = mpesaType === 'Till' ? '' : 'none';
+    get('mpesa-paybill-fields').style.display = mpesaType === 'Paybill' ? '' : 'none';
+  }
+
+  get('paymentMethod').addEventListener('change', togglePaymentFields);
+  get('mpesaType').addEventListener('change', toggleMpesaType);
+  togglePaymentFields();
+  toggleMpesaType();
 
   // Bind initial line row
   getLineRows().forEach(bindLineRow);
@@ -221,6 +303,21 @@
     window.print();
   });
 
-  const today = new Date().toISOString().slice(0, 10);
-  if (!get('invoiceDate').value) get('invoiceDate').value = today;
+  // Auto-fill date and generate unique invoice number
+  var now = new Date();
+  if (!get('invoiceDate').value) get('invoiceDate').value = now.toISOString().slice(0, 10);
+
+  function generateInvoiceNumber() {
+    var d = new Date();
+    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+    return 'INV-' +
+      d.getFullYear() +
+      pad(d.getMonth() + 1) +
+      pad(d.getDate()) + '-' +
+      pad(d.getHours()) +
+      pad(d.getMinutes()) +
+      pad(d.getSeconds());
+  }
+
+  if (!get('invoiceNumber').value) get('invoiceNumber').value = generateInvoiceNumber();
 })();

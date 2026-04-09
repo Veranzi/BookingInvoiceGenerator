@@ -546,9 +546,49 @@ input[readonly] {
   border-left: 4px solid var(--accent);
 }
 
-.invoice-bank {
+/* Payment method form fields */
+.payment-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--paper-warm);
+}
+
+.payment-fields {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+
+/* Invoice payment section */
+.invoice-payment {
   padding-top: 1rem;
   border-top: 1px solid var(--border);
+  margin-bottom: 1.75rem;
+  font-size: 0.9375rem;
+}
+
+.invoice-payment h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.invoice-payment p {
+  margin: 0.4rem 0;
+  color: var(--muted);
+}
+
+.invoice-payment strong {
+  color: var(--ink);
+}
+
+.invoice-payment .payment-note {
+  font-style: italic;
+  color: var(--muted);
 }
 
 /* ----- Print ----- */

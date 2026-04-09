@@ -145,27 +145,79 @@
           </div>
         </div>
 
-        <div class="form-block bank-block">
-          <label class="block-label">Bank payment details</label>
-          <div class="form-grid form-grid-2">
-            <div class="form-block"><label>Bank name</label><input type="text" id="bankName" placeholder="Bank name"></div>
-            <div class="form-block"><label>Bank code</label><input type="text" id="bankCode" placeholder="Bank code"></div>
-            <div class="form-block"><label>Branch name</label><input type="text" id="branchName" placeholder="Branch"></div>
-            <div class="form-block"><label>Branch code</label><input type="text" id="branchCode" placeholder="Branch code"></div>
-            <div class="form-block"><label>Account name</label><input type="text" id="accountName" placeholder="Account name"></div>
-            <div class="form-block"><label>Account number / IBAN </label><input type="text" id="accountNumber" placeholder="Account number or IBAN"></div>
-            <div class="form-block"><label>Swift Code </label><input type="text" id="swiftIban" placeholder="SWIFT "></div>
-          </div>
+        <div class="form-block payment-block">
+          <label class="block-label">Payment</label>
           <div class="form-block">
             <label>Payment method</label>
             <select id="paymentMethod">
-              <option value="">Select...</option>
+              <option value="">Select method...</option>
               <option value="Cash">Cash</option>
               <option value="M-Pesa">M-Pesa</option>
               <option value="Bank Transfer">Bank Transfer</option>
               <option value="Card">Card</option>
             </select>
           </div>
+
+          <!-- M-Pesa fields -->
+          <div id="mpesa-fields" class="payment-fields" style="display:none;">
+            <div class="form-block">
+              <label>M-Pesa name</label>
+              <input type="text" id="mpesaName" placeholder="Registered name">
+            </div>
+            <div class="form-block" style="margin-top:0.75rem;">
+              <label>M-Pesa type</label>
+              <select id="mpesaType">
+                <option value="">Select type...</option>
+                <option value="Phone">Phone Number / Pochi la Biashara</option>
+                <option value="Till">Till Number</option>
+                <option value="Paybill">Paybill</option>
+              </select>
+            </div>
+            <!-- Phone / Pochi la Biashara -->
+            <div id="mpesa-phone-fields" class="mpesa-sub-fields" style="display:none;">
+              <div class="form-block" style="margin-top:0.75rem;">
+                <label>Phone number</label>
+                <input type="text" id="mpesaPhone" placeholder="e.g. 0712 345 678">
+              </div>
+            </div>
+            <!-- Till -->
+            <div id="mpesa-till-fields" class="mpesa-sub-fields" style="display:none;">
+              <div class="form-block" style="margin-top:0.75rem;">
+                <label>Till number</label>
+                <input type="text" id="mpesaTill" placeholder="e.g. 123456">
+              </div>
+            </div>
+            <!-- Paybill -->
+            <div id="mpesa-paybill-fields" class="mpesa-sub-fields" style="display:none;">
+              <div class="form-grid form-grid-2" style="margin-top:0.75rem;">
+                <div class="form-block"><label>Paybill number</label><input type="text" id="mpesaPaybill" placeholder="e.g. 888880"></div>
+                <div class="form-block"><label>Account number</label><input type="text" id="mpesaAccountNo" placeholder="Account number"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Transfer fields -->
+          <div id="bank-fields" class="payment-fields" style="display:none;">
+            <div class="form-grid form-grid-2">
+              <div class="form-block"><label>Bank name</label><input type="text" id="bankName" placeholder="Bank name"></div>
+              <div class="form-block"><label>Bank code</label><input type="text" id="bankCode" placeholder="Bank code"></div>
+              <div class="form-block"><label>Branch name</label><input type="text" id="branchName" placeholder="Branch"></div>
+              <div class="form-block"><label>Branch code</label><input type="text" id="branchCode" placeholder="Branch code"></div>
+              <div class="form-block"><label>Account name</label><input type="text" id="accountName" placeholder="Account name"></div>
+              <div class="form-block"><label>Account number / IBAN</label><input type="text" id="accountNumber" placeholder="Account number or IBAN"></div>
+              <div class="form-block"><label>Swift Code</label><input type="text" id="swiftIban" placeholder="SWIFT"></div>
+            </div>
+          </div>
+
+          <!-- Card fields -->
+          <div id="card-fields" class="payment-fields" style="display:none;">
+            <div class="form-block">
+              <label>Card instructions</label>
+              <input type="text" id="cardInstructions" placeholder="e.g. Pay via Stripe link or card terminal on arrival">
+            </div>
+          </div>
+
+          <!-- Cash: no extra fields needed -->
         </div>
 
         <div class="form-actions">
@@ -231,16 +283,45 @@
             <p><strong>Payment terms:</strong> <span id="out-paymentTerms">—</span></p>
             <p><strong>Notes / Terms:</strong> <span id="out-notesTerms">Thank you for your business.</span></p>
           </div>
-          <div class="invoice-bank">
-            <h3>Bank Payment Details</h3>
-            <p>Bank Name: <strong id="out-bankName">___________________________</strong></p>
-            <p>Bank Code: <strong id="out-bankCode">___________________________</strong></p>
-            <p>Branch Name: <strong id="out-branchName">_________________________</strong></p>
-            <p>Branch Code: <strong id="out-branchCode">_________________________</strong></p>
-            <p>Account Name: <strong id="out-accountName">_______________________</strong></p>
-            <p>Account Number  / IBAN: <strong id="out-accountNumber">_____________________</strong></p>
-            <p>Swift Code: <strong id="out-swiftIban">_________</strong></p>
-            <p>Payment Method: <strong id="out-paymentMethod">(Cash / M-Pesa / Bank Transfer / Card)</strong></p>
+          <div class="invoice-payment" id="invoice-payment">
+            <h3>Payment Details</h3>
+            <p>Payment Method: <strong id="out-paymentMethod">—</strong></p>
+
+            <!-- Cash output -->
+            <div id="out-cash-block" style="display:none;">
+              <p class="payment-note">Payment accepted in cash.</p>
+            </div>
+
+            <!-- M-Pesa output -->
+            <div id="out-mpesa-block" style="display:none;">
+              <p>M-Pesa Name: <strong id="out-mpesaName">—</strong></p>
+              <div id="out-mpesa-phone-block" style="display:none;">
+                <p>Phone: <strong id="out-mpesaPhone">—</strong></p>
+              </div>
+              <div id="out-mpesa-till-block" style="display:none;">
+                <p>Till Number: <strong id="out-mpesaTill">—</strong></p>
+              </div>
+              <div id="out-mpesa-paybill-block" style="display:none;">
+                <p>Paybill: <strong id="out-mpesaPaybill">—</strong></p>
+                <p>Account Number: <strong id="out-mpesaAccountNo">—</strong></p>
+              </div>
+            </div>
+
+            <!-- Bank Transfer output -->
+            <div id="out-bank-block" style="display:none;">
+              <p>Bank Name: <strong id="out-bankName">—</strong></p>
+              <p>Bank Code: <strong id="out-bankCode">—</strong></p>
+              <p>Branch Name: <strong id="out-branchName">—</strong></p>
+              <p>Branch Code: <strong id="out-branchCode">—</strong></p>
+              <p>Account Name: <strong id="out-accountName">—</strong></p>
+              <p>Account Number / IBAN: <strong id="out-accountNumber">—</strong></p>
+              <p>Swift Code: <strong id="out-swiftIban">—</strong></p>
+            </div>
+
+            <!-- Card output -->
+            <div id="out-card-block" style="display:none;">
+              <p><strong id="out-cardInstructions">—</strong></p>
+            </div>
           </div>
         </div>
       </div>
